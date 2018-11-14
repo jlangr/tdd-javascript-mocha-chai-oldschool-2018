@@ -1,23 +1,37 @@
-import { symbolLookup } from './stock-lookup-service'
+const { defaultSymbolLookup } = require('./stock-lookup-service')
 
-exports.createPortfolio = () => ({ holdings: {} })
+module.exports = function(symbolLookup = defaultSymbolLookup) {
+  const obj = {
+    createPortfolio: function() {
+      return { holdings: {} }
+    },
 
-exports.empty = portfolio => size(portfolio) === 0
+    empty: function(portfolio) {
+      return this.size(portfolio) === 0
+    },
 
-exports.size = portfolio => Object.keys(portfolio.holdings).length
+    size: function(portfolio) {
+      return Object.keys(portfolio.holdings).length
+    },
 
-exports.value = portfolio => empty(portfolio) ? 0 :
-  Object.keys(portfolio.holdings).reduce(
-    (totalValue, symbol) => totalValue + symbolLookup(symbol) * sharesOf(portfolio, symbol),
-    0)
+    value: function(portfolio) {
+      return this.empty(portfolio) ? 0 :
+        Object.keys(portfolio.holdings).reduce(
+          (totalValue, symbol) => totalValue + symbolLookup(symbol) * this.sharesOf(portfolio, symbol),
+          0)
+    },
 
-exports.sharesOf = (portfolio, symbol) =>
-  !portfolio.holdings[symbol] ? 0 : portfolio.holdings[symbol]
+    sharesOf: function(portfolio, symbol) {
+      return !portfolio.holdings[symbol] ? 0 : portfolio.holdings[symbol]
+    },
 
-exports.purchase = (portfolio, symbol, shares) =>
-  ({ ...portfolio,
-    holdings: {
-      ...portfolio.holdings,
-      [symbol]: sharesOf(portfolio, symbol) + shares
+    purchase: function(portfolio, symbol, shares) {
+      const newPortfolio = Object.assign({}, portfolio)
+      const newHoldings = Object.assign({}, portfolio.holdings)
+      newHoldings[symbol] = this.sharesOf(portfolio, symbol) + shares
+      newPortfolio.holdings = newHoldings
+      return newPortfolio
     }
-  })
+  }
+  return obj
+}
