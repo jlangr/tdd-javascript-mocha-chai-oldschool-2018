@@ -78,9 +78,8 @@ describe('a portfolio', () => {
     it('is symbol price for single-share purchase', () => {
       let portfolioData
 
-      const stubSymbolLookup = () => {
-        return 42
-      }
+      const stubSymbolLookup = sinon.stub()
+      stubSymbolLookup.withArgs(IBM).returns(IBMPrice)
 
       const portfolioObj = require('./portfolio')(stubSymbolLookup)
 
@@ -89,7 +88,7 @@ describe('a portfolio', () => {
 
       portfolioData = portfolioObj.purchase(portfolioData, 'IBM', 1)
 
-      expect(portfolioObj.value(portfolioData)).to.equal(42)
+      expect(portfolioObj.value(portfolioData)).to.equal(IBMPrice)
     })
   })
 
