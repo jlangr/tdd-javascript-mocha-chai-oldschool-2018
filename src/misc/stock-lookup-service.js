@@ -1,7 +1,5 @@
-let symbolLookup = _symbol => { throw new Error('not yet implemented') }
-const symbolLookupStub = stub => symbolLookup = stub
+const symbolLookup = _symbol => { throw new Error('not yet implemented') }
 
 module.exports = {
   symbolLookup,
-  symbolLookupStub
 }
