@@ -1,0 +1,25 @@
+{
+  "name": "name-normalizer",
+  "version": "0.1.0",
+  "devDependencies": {
+    "async": "^2.6.1",
+    "axios": "^0.18.0",
+    "babel-plugin-rewire-exports": "^1.0.1",
+    "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "coffeescript": "^2.3.2",
+    "eslint": "^5.8.0",
+    "eslint-plugin-react": "^7.11.1",
+    "express": "^4.16.4",
+    "mocha": "^5.2.0",
+    "sinon": "^7.1.1",
+    "sinon-chai": "^3.2.0",
+    "supertest": "^3.3.0",
+    "testdouble": "^3.8.2"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --./src/**/*.test.js",
+    "test:watch": "./node_modules/.bin/mocha ./src/**/*.test.js --watch --reporter min",
+    "lint": "./node_modules/.bin/eslint src/**"
+  }
+}
