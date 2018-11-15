@@ -1,7 +1,7 @@
-const { defaultSymbolLookup } = require('./stock-lookup-service')
+//var defaultSymbolLookup = require('./stock-lookup-service') // in ES2015 you can use default args
 
-module.exports = function(symbolLookup = defaultSymbolLookup) {
-  const obj = {
+module.exports = function(symbolLookup) {
+  return {
     createPortfolio: function() {
       return { holdings: {} }
     },
@@ -15,10 +15,10 @@ module.exports = function(symbolLookup = defaultSymbolLookup) {
     },
 
     value: function(portfolio) {
-      return this.empty(portfolio) ? 0 :
-        Object.keys(portfolio.holdings).reduce(
-          (totalValue, symbol) => totalValue + symbolLookup(symbol) * this.sharesOf(portfolio, symbol),
-          0)
+      var sumValues = function(totalValue, symbol) {
+        return totalValue + symbolLookup(symbol) * this.sharesOf(portfolio, symbol)
+      }.bind(this)
+      return this.empty(portfolio) ? 0 : Object.keys(portfolio.holdings).reduce(sumValues, 0)
     },
 
     sharesOf: function(portfolio, symbol) {
@@ -26,12 +26,11 @@ module.exports = function(symbolLookup = defaultSymbolLookup) {
     },
 
     purchase: function(portfolio, symbol, shares) {
-      const newPortfolio = Object.assign({}, portfolio)
-      const newHoldings = Object.assign({}, portfolio.holdings)
+      var newPortfolio = Object.assign({}, portfolio)
+      var newHoldings = Object.assign({}, portfolio.holdings)
       newHoldings[symbol] = this.sharesOf(portfolio, symbol) + shares
       newPortfolio.holdings = newHoldings
       return newPortfolio
     }
   }
-  return obj
 }
