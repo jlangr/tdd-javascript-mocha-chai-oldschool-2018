@@ -1,36 +1,41 @@
-//var defaultSymbolLookup = require('./stock-lookup-service') // in ES2015 you can use default args
+var symbolLookup = require('./stock-lookup-service').symbolLookup
 
-module.exports = function(symbolLookup) {
-  return {
-    createPortfolio: function() {
-      return { holdings: {} }
-    },
+var  createPortfolio = function() {
+  return { holdings: {} }
+}
 
-    empty: function(portfolio) {
-      return this.size(portfolio) === 0
-    },
+var empty = function(portfolio) {
+  return size(portfolio) === 0
+}
 
-    size: function(portfolio) {
-      return Object.keys(portfolio.holdings).length
-    },
+var size = function(portfolio) {
+  return Object.keys(portfolio.holdings).length
+}
 
-    value: function(portfolio) {
-      var sumValues = function(totalValue, symbol) {
-        return totalValue + symbolLookup(symbol) * this.sharesOf(portfolio, symbol)
-      }.bind(this)
-      return this.empty(portfolio) ? 0 : Object.keys(portfolio.holdings).reduce(sumValues, 0)
-    },
-
-    sharesOf: function(portfolio, symbol) {
-      return !portfolio.holdings[symbol] ? 0 : portfolio.holdings[symbol]
-    },
-
-    purchase: function(portfolio, symbol, shares) {
-      var newPortfolio = Object.assign({}, portfolio)
-      var newHoldings = Object.assign({}, portfolio.holdings)
-      newHoldings[symbol] = this.sharesOf(portfolio, symbol) + shares
-      newPortfolio.holdings = newHoldings
-      return newPortfolio
-    }
+var value = function(portfolio) {
+  var sumValues = function(totalValue, symbol) {
+    return totalValue + symbolLookup(symbol) * sharesOf(portfolio, symbol)
   }
+  return empty(portfolio) ? 0 : Object.keys(portfolio.holdings).reduce(sumValues, 0)
+}
+
+var sharesOf = function(portfolio, symbol) {
+  return !portfolio.holdings[symbol] ? 0 : portfolio.holdings[symbol]
+}
+
+var purchase = function(portfolio, symbol, shares) {
+  var newPortfolio = Object.assign({}, portfolio)
+  var newHoldings = Object.assign({}, portfolio.holdings)
+  newHoldings[symbol] = sharesOf(portfolio, symbol) + shares
+  newPortfolio.holdings = newHoldings
+  return newPortfolio
+}
+
+module.exports = {
+  createPortfolio: createPortfolio,
+  empty: empty,
+  size: size,
+  value: value,
+  sharesOf: sharesOf,
+  purchase: purchase
 }
